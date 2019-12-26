@@ -1,8 +1,7 @@
 void setup(){
-  size(800, 600);
+  size(1440, 2960);
 }
 
 void draw() {
 background(0);
 rect(mouseX, mouseY, 150, 250);
-}
