@@ -1,0 +1,119 @@
+import android.content.Context; 
+import android.hardware.Sensor; 
+import android.hardware.SensorManager; 
+import android.hardware.SensorEvent; 
+import android.hardware.SensorEventListener;
+
+Context context;
+SensorManager manager; 
+Sensor Drehratensensor; 
+GyroscopeListener listener; 
+
+Sensor Beschleunigungssensor;
+AccelerometerListener listenerAcc;
+
+float rx, ry, rz;
+float ax, ay, az;
+
+void setup() {  
+  fullScreen();    
+  context = getContext();  
+  manager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);  
+  Drehratensensor = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);  
+  listener = new GyroscopeListener();  
+  manager.registerListener(listener, Drehratensensor, SensorManager.SENSOR_DELAY_NORMAL);
+  Beschleunigungssensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);  
+  listenerAcc = new AccelerometerListener();  
+  manager.registerListener(listenerAcc, Beschleunigungssensor, SensorManager.SENSOR_DELAY_NORMAL);
+  
+textFont(createFont("Arial", displayDensity * 20));  
+textAlign(CENTER, CENTER); 
+
+}
+
+void draw() {  
+  background(157);  
+  fill(255);
+  text("Drehratensensor: ", width/2, height*5/40);  
+  text("Beschleunigungssensor: ", width/2, height*25/40);
+
+  wechsleFarbeGyr(rx);
+  text("x: " + rx, width/2, height*7/40);
+  wechsleFarbeGyr(ry);
+  text("y: " + ry, width/2, height*9/40);
+  wechsleFarbeGyr(rz);
+  text("z: " + rz, width/2, height*11/40);
+  
+  wechselFarbeAcc(ax);
+  text("x: " + ax, width/2, height*27/40);
+  wechselFarbeAcc(ay);
+  text("y: " + ay, width/2, height*29/40);
+  wechselFarbeAcc(az);
+  text("z: " + az, width/2, height*31/40);
+}
+
+public void resume() {  
+  if (manager != null) {    
+  manager.registerListener(listener, Beschleunigungssensor, SensorManager.SENSOR_DELAY_NORMAL); 
+  manager.registerListener(listenerAcc, Beschleunigungssensor, SensorManager.SENSOR_DELAY_NORMAL); 
+}
+}
+
+
+public void pause() {  
+if (manager != null) {    
+manager.unregisterListener(listener);  
+manager.unregisterListener(listenerAcc);
+} 
+}
+
+class GyroscopeListener implements SensorEventListener {  
+public void onSensorChanged(SensorEvent event) {    
+rx = event.values[0];    
+ry = event.values[1];    
+rz = event.values[2];      
+}  
+
+public void onAccuracyChanged(Sensor Beschleunigungssensor, int accuracy) {
+}
+}
+
+class AccelerometerListener implements SensorEventListener {  
+public void onSensorChanged(SensorEvent event) {    
+ax = event.values[0];   
+ay = event.values[1];    
+az = event.values[2];  
+
+}
+
+public void onAccuracyChanged(Sensor Drehratensensor, int accuracy) {
+}
+}
+
+
+void wechsleFarbeGyr(float pCords){
+  
+  float coords = pCords;
+   if(coords > -0.2 && coords < 0.2) { 
+     fill(255, 255, 255);
+  }else if( coords > -0.5 && coords < 0.5) { 
+    fill(0 , 255, 0);
+  }else if( coords > -2 && coords < 2 ){ 
+    fill(255, 165, 0);
+  }else{ 
+    fill(255, 0, 0);
+  }
+}
+
+void wechselFarbeAcc(float pCords) {
+  float coords = pCords;
+   if(coords > -2.5 && coords < 2.5) { 
+     fill(255, 255, 255); 
+  } else if(coords> -4 && coords < 4) { 
+    fill(0 , 255, 0); 
+  } else if(coords > -8 && coords < 8 ){ 
+    fill(255, 165, 0); 
+  } else{ 
+    fill(255, 0, 0); 
+  }  
+}
